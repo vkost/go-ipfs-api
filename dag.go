@@ -149,3 +149,16 @@ func (s *Shell) dagToFilesReader(data interface{}) (*files.MultiFileReader, erro
 	slf := files.NewSliceDirectory([]files.DirEntry{files.FileEntry("", fr)})
 	return s.newMultiFileReader(slf)
 }
+
+func (s *Shell) DagExport(ctx context.Context, root string) (io.ReadCloser, error) {
+	rb := s.Request("dag/export", root)
+	resp, err := rb.Send(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if resp.Error != nil {
+		return nil, resp.Error
+	}
+
+	return resp.Output, nil
+}
