@@ -56,3 +56,16 @@ func (s *Shell) DagPutWithOpts(data interface{}, opts ...options.DagPutOption) (
 		Body(fileReader).
 		Exec(context.Background(), &out)
 }
+
+func (s *Shell) DagExport(ctx context.Context, root string) (io.ReadCloser, error) {
+	rb := s.Request("dag/export", root)
+	resp, err := rb.Send(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if resp.Error != nil {
+		return nil, resp.Error
+	}
+
+	return resp.Output, nil
+}
